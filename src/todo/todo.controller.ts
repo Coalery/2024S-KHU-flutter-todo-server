@@ -9,11 +9,20 @@ import {
 } from './dto/response';
 import { Owner } from '../owner.decorator';
 import { CreateTodoRequestDto, UpdateTodoRequestDto } from './dto/request';
+import {
+  ApiBasicAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+} from '@nestjs/swagger';
 
 @Controller()
+@ApiBasicAuth()
 export class AppController {
   constructor(private readonly todoService: TodoService) {}
 
+  @ApiOperation({ summary: '투두 목록 조회' })
+  @ApiResponse({ status: 200, type: ListTodoResponseDto })
   @Get('/todos')
   async listTodo(@Owner() owner: string): Promise<ListTodoResponseDto> {
     const todoEntities = await this.todoService.listTodo(owner);
@@ -26,6 +35,9 @@ export class AppController {
     }));
   }
 
+  @ApiOperation({ summary: '투두 조회' })
+  @ApiParam({ name: 'todoId', description: '조회할 투두 ID' })
+  @ApiResponse({ status: 200, type: GetTodoResponseDto })
   @Get('/todos/:todoId')
   async getTodoById(
     @Owner() owner: string,
@@ -41,6 +53,8 @@ export class AppController {
     };
   }
 
+  @ApiOperation({ summary: '투두 생성' })
+  @ApiResponse({ status: 201, type: CreateTodoResponseDto })
   @Post('/todos')
   async createTodo(
     @Owner() owner: string,
@@ -57,6 +71,9 @@ export class AppController {
     };
   }
 
+  @ApiOperation({ summary: '투두 수정' })
+  @ApiParam({ name: 'todoId', description: '수정할 투두 ID' })
+  @ApiResponse({ status: 200, type: UpdateTodoResponseDto })
   @Put('/todos/:todoId')
   async updateTodo(
     @Owner() owner: string,
@@ -78,6 +95,8 @@ export class AppController {
     };
   }
 
+  @ApiOperation({ summary: '투두 삭제' })
+  @ApiParam({ name: 'todoId', description: '삭제할 투두 ID' })
   @Delete('/todos/:todoId')
   async deleteTodo(
     @Owner() owner: string,
