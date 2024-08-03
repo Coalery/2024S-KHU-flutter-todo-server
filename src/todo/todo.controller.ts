@@ -5,6 +5,7 @@ import {
   CreateTodoResponseDto,
   GetTodoResponseDto,
   ListTodoResponseDto,
+  TodoResponse,
   UpdateTodoResponseDto,
 } from './dto/response';
 import { Owner } from '../owner.decorator';
@@ -22,7 +23,7 @@ export class AppController {
   constructor(private readonly todoService: TodoService) {}
 
   @ApiOperation({ summary: '투두 목록 조회' })
-  @ApiResponse({ status: 200, type: ListTodoResponseDto })
+  @ApiResponse({ status: 200, type: [TodoResponse] })
   @Get('/todos')
   async listTodo(@Owner() owner: string): Promise<ListTodoResponseDto> {
     const todoEntities = await this.todoService.listTodo(owner);
